@@ -23,3 +23,5 @@ dist/
 *.tmp
 .vscode/
 .idea/
+
+.env
