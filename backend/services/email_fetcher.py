@@ -30,14 +30,14 @@ def clean_text(text):
 
 def fetch_unread_emails(limit=100):
     # Calculate date 7 days ago
-    since_date = (datetime.now() - timedelta(days=1)).strftime("%d-%b-%Y")  # Format: 01-Jan-2024
+    since_date = (datetime.now() - timedelta(days=2)).strftime("%d-%b-%Y")  # Format: 01-Jan-2024
 
     mail = imaplib.IMAP4_SSL(SERVER)
     mail.login(EMAIL, APP_PASSWORD)
     mail.select("inbox")
 
     # Search: Unread AND received since 7 days ago
-    result, data = mail.search(None, f'(UNSEEN SINCE {since_date})')
+    result, data = mail.search(None, f'(SINCE {since_date})')
     email_ids = data[0].split()[:limit]  # Limit to first 10
 
     emails = []
