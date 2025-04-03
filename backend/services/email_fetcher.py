@@ -28,17 +28,15 @@ def decode_mime_words(s):
 def clean_text(text):
     return re.sub(r'\s+', ' ', text.strip())
 
-def fetch_unread_emails(limit=100):
-    # Calculate date 7 days ago
+def fetch_emails(limit=100):
     since_date = (datetime.now() - timedelta(days=2)).strftime("%d-%b-%Y")  # Format: 01-Jan-2024
 
     mail = imaplib.IMAP4_SSL(SERVER)
     mail.login(EMAIL, APP_PASSWORD)
     mail.select("inbox")
 
-    # Search: Unread AND received since 7 days ago
     result, data = mail.search(None, f'(SINCE {since_date})')
-    email_ids = data[0].split()[:limit]  # Limit to first 10
+    email_ids = data[0].split()[:limit]
 
     emails = []
 
