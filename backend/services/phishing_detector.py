@@ -12,20 +12,24 @@ SUSPICIOUS_KEYWORDS = {
     ]
 }
 
-# ✅ Flatten all keywords into one list
 ALL_KEYWORDS = [kw for category in SUSPICIOUS_KEYWORDS.values() for kw in category]
 
 def detect_phishing(text):
     text = text.lower()
+    matched = []
 
-    matched = [kw for kw in ALL_KEYWORDS if kw in text]
-    score = len(matched)
-    total = len(ALL_KEYWORDS)
-    confidence = round(score / total, 2) if total > 0 else 0.0
+    category_hits = 0
+    for category, keywords in SUSPICIOUS_KEYWORDS.items():
+        category_match = False
+        for word in keywords:
+            if word in text:
+                matched.append(word)
+                category_match = True
+        if category_match:
+            category_hits += 1
 
-    is_phishing = score >= 1
-
-    print("🔍 DEBUG:", {"matched": matched, "score": score, "confidence": confidence, "phishing": is_phishing})
+    confidence = round(category_hits / len(SUSPICIOUS_KEYWORDS), 2)
+    is_phishing = confidence >= 0.3
 
     return {
         "phishing": is_phishing,

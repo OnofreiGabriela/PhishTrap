@@ -31,7 +31,7 @@ const Dashboard = () => {
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>
-        📥 Emails from the Last 24 Hours (Scanned for Phishing)
+        Emails from the Last 24 Hours (Scanned for Phishing)
       </h2>
       <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
         This list shows all emails received in the past 24 hours, regardless of read status.
@@ -74,7 +74,7 @@ const Dashboard = () => {
 
       {/* Scanned Emails Table */}
       <div>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>📋 Auto-Scanned Inbox</h3>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}> Auto-Scanned Inbox</h3>
         {emails.length === 0 ? (
           <p>No recent emails found.</p>
         ) : (
@@ -83,6 +83,7 @@ const Dashboard = () => {
               <tr>
                 <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>From</th>
                 <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Subject</th>
+                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc'}}>Ip Address</th>
                 <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Status</th>
               </tr>
             </thead>
@@ -91,6 +92,7 @@ const Dashboard = () => {
                 <tr key={idx}>
                   <td style={{ padding: '8px' }}>{email.from}</td>
                   <td style={{ padding: '8px' }}>{email.subject}</td>
+                  <td style={{ padding: '8px'}}>{email.ip}</td>
                   <td>
                     {email.phishing ? (
                       <span style={{ color: 'red' }}>

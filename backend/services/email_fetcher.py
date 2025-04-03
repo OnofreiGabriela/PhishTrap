@@ -1,6 +1,7 @@
 import imaplib
 import email
 from email.header import decode_header
+from email.utils import parsedate_tz, mktime_tz
 import re
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -28,8 +29,21 @@ def decode_mime_words(s):
 def clean_text(text):
     return re.sub(r'\s+', ' ', text.strip())
 
+def extract_ip_from_headers(headers):
+    # Try Received first
+    received = re.search(r"Received: from .*?\[(\d{1,3}(?:\.\d{1,3}){3})\]", headers)
+    if received:
+        return received.group(1)
+
+    # Try X-Originating-IP
+    x_orig = re.search(r"X-Originating-IP: \[(\d{1,3}(?:\.\d{1,3}){3})\]", headers)
+    if x_orig:
+        return x_orig.group(1)
+
+    return "Not found"
+
 def fetch_emails(limit=100):
-    since_date = (datetime.now() - timedelta(days=2)).strftime("%d-%b-%Y")  # Format: 01-Jan-2024
+    since_date = (datetime.now() - timedelta(days=1)).strftime("%d-%b-%Y")
 
     mail = imaplib.IMAP4_SSL(SERVER)
     mail.login(EMAIL, APP_PASSWORD)
@@ -42,10 +56,20 @@ def fetch_emails(limit=100):
 
     for eid in email_ids:
         result, msg_data = mail.fetch(eid, "(RFC822)")
-        raw = email.message_from_bytes(msg_data[0][1])
+        raw_data = msg_data[0][1]
+        raw = email.message_from_bytes(raw_data)
+        headers_str = str(raw)
 
-        subject = decode_mime_words(raw["Subject"])
-        sender = raw["From"]
+        # ⏱️ Filter emails older than 24 hours
+        date_tuple = email.utils.parsedate_tz(raw["Date"])
+        if date_tuple:
+            email_datetime = datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
+            if datetime.now() - email_datetime > timedelta(days=1):
+                continue
+
+        ip_address = extract_ip_from_headers(headers_str)
+        subject = decode_mime_words(raw["Subject"] or "No subject")
+        sender = clean_text(raw["From"] or "Unknown sender")
 
         body = ""
         if raw.is_multipart():
@@ -59,8 +83,10 @@ def fetch_emails(limit=100):
         emails.append({
             "from": clean_text(sender),
             "subject": clean_text(subject),
-            "body": clean_text(body)
+            "body": clean_text(body),
+            "ip": ip_address
         })
+
 
     mail.logout()
     return emails
