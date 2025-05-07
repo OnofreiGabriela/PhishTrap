@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.env
+
+# React/Node
+node_modules/
+build/
+dist/
+.env.local
+.env.development
+.env.production
+
+# Logs
+*.log
+
+# OS/Editor junk
+.DS_Store
+*.swp
+*.swo
+*.tmp
+.vscode/
+.idea/
+
+.env
