@@ -37,19 +37,19 @@
 #         "matched_keywords": matched
 #     }
 
-from utils.safe_utils import is_in_safe_list
+from utils.safe_utils import is_in_safe_list, normalize_sender
 from services.email_classifier import classify_email
 
-def detect_phishing(text, sender, ip):
-    if is_in_safe_list(sender, ip):
-        return {
-            "phishing": False,
-            "matched_keywords": [],
-            "source": "safe_list"
-        }
+def detect_phishing(body, sender, ip):
+    sender = normalize_sender(sender)
+    ip = ip.strip()
 
-    result = classify_email(text)
-    return {
-        "phishing": result["label"] == "Phishing",
-        "matched_keywords": []
-    }
+    if ip.upper() == "NOT FOUND":
+        ip = ""
+
+    if is_in_safe_list(sender, ip):
+        return {"phishing": False}
+
+    result = classify_email(body)
+    return {"phishing": result["label"] == "Phishing"}
+

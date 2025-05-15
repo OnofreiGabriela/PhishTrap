@@ -2,37 +2,40 @@ import React, { useEffect, useState } from 'react';
 import axios from '../api/api';
 
 const Dashboard = () => {
-  const [content, setContent] = useState('');
-  const [result, setResult] = useState(null);
   const [emails, setEmails] = useState([]);
-
-  const checkEmail = async () => {
-    try {
-      const response = await axios.post('/email/check', { content });
-      setResult(response.data.phishing);
-    } catch (err) {
-      console.error('Error checking email content:', err);
-    }
-  };
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportData, setReportData] = useState(null);
 
   const fetchAnalyzedEmails = async () => {
     try {
       const response = await axios.get('/email/fetch-analyze');
-      setEmails(response.data);
+      setEmails([...response.data]);
     } catch (err) {
       console.error('Error fetching analyzed emails:', err);
     }
   };
-  const reportAsSafe = async (email) => {
+
+  const reportAsSafe = async (emailToUpdate) => {
     try {
+      setEmails((prevEmails) =>
+        prevEmails.map((email) =>
+          email.from === emailToUpdate.from && email.ip === emailToUpdate.ip
+            ? { ...email, phishing: false }
+            : email
+        )
+      );
       await axios.post('/email/mark-safe', {
-        from: email.from,
-        ip: email.ip
+        from: emailToUpdate.from,
+        ip: emailToUpdate.ip
       });
-      fetchAnalyzedEmails();
     } catch (err) {
       console.error('Error marking email as safe:', err);
     }
+  };
+
+  const reportPhishingToDNSC = (email) => {
+    setReportData(email);
+    setShowReportModal(true);
   };
 
   useEffect(() => {
@@ -49,40 +52,6 @@ const Dashboard = () => {
         Each one has been automatically analyzed for phishing.
       </p>
 
-      {/* Manual Check Section */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}> Manual Check</h3>
-        <textarea
-          rows={8}
-          cols={60}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder='Paste email content here...'
-          style={{ padding: '10px', fontSize: '14px' }}
-        />
-        <br />
-        <button
-          onClick={checkEmail}
-          style={{
-            marginTop: '10px',
-            padding: '8px 16px',
-            fontSize: '14px',
-            cursor: 'pointer',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-          }}
-        >
-          Check
-        </button>
-        {result !== null && (
-          <p style={{ marginTop: '10px', fontSize: '16px' }}>
-            {result ? '⚠️ Phishing Detected!' : '✅ Email Appears Safe'}
-          </p>
-        )}
-      </div>
-
       {/* Scanned Emails Table */}
       <div>
         <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}> Auto-Scanned Inbox</h3>
@@ -94,7 +63,7 @@ const Dashboard = () => {
               <tr>
                 <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>From</th>
                 <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Subject</th>
-                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc'}}>Ip Address</th>
+                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Ip Address</th>
                 <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Status</th>
               </tr>
             </thead>
@@ -108,23 +77,38 @@ const Dashboard = () => {
                     {email.phishing ? (
                       <>
                         <span style={{ color: 'red' }}>⚠️ Possible Phishing Detected</span><br />
-                        {email.ip !== "NOT FOUND" && (
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
+                          {email.ip !== "NOT FOUND" && (
+                            <button
+                              onClick={() => reportAsSafe(email)}
+                              style={{
+                                padding: '5px 10px',
+                                fontSize: '12px',
+                                cursor: 'pointer',
+                                backgroundColor: '#28a745',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                              }}
+                            >
+                              Mark as Safe
+                            </button>
+                          )}
                           <button
-                            onClick={() => reportAsSafe(email)}
+                            onClick={() => reportPhishingToDNSC(email)}
                             style={{
-                              marginTop: '5px',
                               padding: '5px 10px',
                               fontSize: '12px',
                               cursor: 'pointer',
-                              backgroundColor: '#28a745',
+                              backgroundColor: '#dc3545',
                               color: 'white',
                               border: 'none',
                               borderRadius: '4px',
                             }}
                           >
-                            Mark as Safe
+                            Report to DNSC
                           </button>
-                        )}
+                        </div>
                       </>
                     ) : (
                       <span style={{ color: 'green' }}>✅ Safe</span>
@@ -136,6 +120,63 @@ const Dashboard = () => {
           </table>
         )}
       </div>
+
+      {/* Report Modal */}
+      {showReportModal && reportData && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0,
+          width: '100%', height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div style={{
+            background: '#fff',
+            padding: '20px',
+            borderRadius: '8px',
+            width: '500px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+          }}>
+            <h3>Report to DNSC</h3>
+            <p><strong>From:</strong> {reportData.from}</p>
+            <p><strong>Subject:</strong> {reportData.subject}</p>
+            <p><strong>IP Address:</strong> {reportData.ip}</p>
+            <p><strong>Content:</strong></p>
+            <div style={{ maxHeight: '150px', overflowY: 'auto', padding: '10px', backgroundColor: '#f1f1f1', borderRadius: '4px' }}>
+              <pre style={{ whiteSpace: 'pre-wrap', fontSize: '14px' }}>{reportData.body}</pre>
+            </div>
+            <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between' }}>
+              <button
+                onClick={() => setShowReportModal(false)}
+                style={{
+                  padding: '8px 12px',
+                  backgroundColor: '#6c757d',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px'
+                }}
+              >
+                Cancel
+              </button>
+              <a
+                href="https://pnrisc.dnsc.ro/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: '8px 12px',
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '4px'
+                }}
+              >
+                Open DNSC Form
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

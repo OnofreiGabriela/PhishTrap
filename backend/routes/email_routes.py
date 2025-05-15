@@ -12,12 +12,14 @@ def fetch_and_analyze_emails():
     result = []
 
     for e in emails:
-        result_data = detect_phishing(e["body"], e["from"], e.get("ip", ""))
+        cleaned_body = clean_email_content(e.get("body", ""))
+        result_data = detect_phishing(cleaned_body, e["from"], e.get("ip", ""))
         result.append({
             "from": e["from"],
             "subject": e["subject"],
             "phishing": result_data["phishing"],
-            "ip": e.get("ip", "N/A")
+            "ip": e.get("ip", "N/A"),
+            "body":  cleaned_body
         })
 
     return jsonify(result)
