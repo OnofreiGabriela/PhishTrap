@@ -30,12 +30,10 @@ def clean_text(text):
     return re.sub(r'\s+', ' ', text.strip())
 
 def extract_ip_from_headers(headers):
-    # Try Received first
     received = re.search(r"Received: from .*?\[(\d{1,3}(?:\.\d{1,3}){3})\]", headers)
     if received:
         return received.group(1)
 
-    # Try X-Originating-IP
     x_orig = re.search(r"X-Originating-IP: \[(\d{1,3}(?:\.\d{1,3}){3})\]", headers)
     if x_orig:
         return x_orig.group(1)

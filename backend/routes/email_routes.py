@@ -16,7 +16,6 @@ def fetch_and_analyze_emails():
             "from": e["from"],
             "subject": e["subject"],
             "phishing": result_data["phishing"],
-            "confidence": result_data["confidence"],
             "ip": e.get("ip", "N/A")
         })
 

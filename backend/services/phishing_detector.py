@@ -45,7 +45,6 @@ def detect_phishing(text):
     """
     result = classify_email(text)
     return {
-        "phishing": result["label"] == "Phishing",
-        "confidence": round(result["confidence"], 2),
-        "matched_keywords": []  # keep key for backward compatibility
+        "phishing": result["phishing"],
+        "matched_keywords": []
     }

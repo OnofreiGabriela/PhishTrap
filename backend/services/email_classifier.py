@@ -6,10 +6,8 @@ import os
 from pathlib import Path
 from transformers import BertTokenizer, BertForSequenceClassification
 
-# Get the root of the project
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Adjust based on your actual directory structure
 MODEL_PATH = ROOT_DIR / "phishing_email_classifier" / "models" / "scam-email-classifier-bert-uncased"
 TOKENIZER_PATH = ROOT_DIR / "phishing_email_classifier" / "models" / "scam-email-bert-tokenizer"
 
@@ -17,6 +15,16 @@ tokenizer = BertTokenizer.from_pretrained(str(TOKENIZER_PATH), local_files_only=
 model = BertForSequenceClassification.from_pretrained(str(MODEL_PATH), local_files_only=True)
 
 model.eval()
+
+import re
+
+def clean_email_text(text):
+    text = text.lower()
+    text = re.sub(r"http\S+", "[URL]", text)
+    text = re.sub(r"\S+@\S+", "[EMAIL]", text)
+    text = re.sub(r"[^a-zA-Z0-9\s\[\]]", "", text)
+    return text.strip()
+
 
 def classify_email(text):
     inputs = tokenizer(
@@ -31,10 +39,9 @@ def classify_email(text):
         outputs = model(**inputs)
         logits = outputs.logits
         probs = F.softmax(logits, dim=1)
-        confidence = probs[0, 1].item()  # Probability of class 1 (Phishing)
         predicted_class = torch.argmax(probs, dim=1).item()
 
+    is_phishing = predicted_class == 1
     return {
-        "label": "Phishing" if predicted_class == 1 else "Legitimate",
-        "confidence": confidence
+        "phishing": is_phishing
     }

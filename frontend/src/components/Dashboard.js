@@ -92,18 +92,15 @@ const Dashboard = () => {
                 <tr key={idx}>
                   <td style={{ padding: '8px' }}>{email.from}</td>
                   <td style={{ padding: '8px' }}>{email.subject}</td>
-                  <td style={{ padding: '8px'}}>{email.ip}</td>
+                  <td style={{ padding: '8px' }}>{email.ip}</td>
                   <td>
                     {email.phishing ? (
                       <span style={{ color: 'red' }}>
-                        ⚠️ Phishing<br />
-                        <small>
-                          Confidence: {isNaN(email.confidence) ? "0%" : `${Math.round(email.confidence * 100)}%`}
-                        </small>
+                        ⚠️ Possible Phishing Detected
                       </span>
                     ) : (
                       <span style={{ color: 'green' }}>
-                        ✅ Safe<br />
+                        ✅ Safe
                       </span>
                     )}
                   </td>
