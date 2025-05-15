@@ -39,9 +39,7 @@ def classify_email(text):
         outputs = model(**inputs)
         logits = outputs.logits
         probs = F.softmax(logits, dim=1)
-        predicted_class = torch.argmax(probs, dim=1).item()
+        label = "Phishing" if probs[0, 1].item() > 0.7 else "Legitimate"
 
-    is_phishing = predicted_class == 1
-    return {
-        "phishing": is_phishing
-    }
+    return { "label": label }
+

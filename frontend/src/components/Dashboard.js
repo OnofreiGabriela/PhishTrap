@@ -23,6 +23,17 @@ const Dashboard = () => {
       console.error('Error fetching analyzed emails:', err);
     }
   };
+  const reportAsSafe = async (email) => {
+    try {
+      await axios.post('/email/mark-safe', {
+        from: email.from,
+        ip: email.ip
+      });
+      fetchAnalyzedEmails();
+    } catch (err) {
+      console.error('Error marking email as safe:', err);
+    }
+  };
 
   useEffect(() => {
     fetchAnalyzedEmails();
@@ -93,15 +104,30 @@ const Dashboard = () => {
                   <td style={{ padding: '8px' }}>{email.from}</td>
                   <td style={{ padding: '8px' }}>{email.subject}</td>
                   <td style={{ padding: '8px' }}>{email.ip}</td>
-                  <td>
+                  <td style={{ padding: '8px' }}>
                     {email.phishing ? (
-                      <span style={{ color: 'red' }}>
-                        ⚠️ Possible Phishing Detected
-                      </span>
+                      <>
+                        <span style={{ color: 'red' }}>⚠️ Possible Phishing Detected</span><br />
+                        {email.ip !== "NOT FOUND" && (
+                          <button
+                            onClick={() => reportAsSafe(email)}
+                            style={{
+                              marginTop: '5px',
+                              padding: '5px 10px',
+                              fontSize: '12px',
+                              cursor: 'pointer',
+                              backgroundColor: '#28a745',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                            }}
+                          >
+                            Mark as Safe
+                          </button>
+                        )}
+                      </>
                     ) : (
-                      <span style={{ color: 'green' }}>
-                        ✅ Safe
-                      </span>
+                      <span style={{ color: 'green' }}>✅ Safe</span>
                     )}
                   </td>
                 </tr>

@@ -37,14 +37,19 @@
 #         "matched_keywords": matched
 #     }
 
+from utils.safe_utils import is_in_safe_list
 from services.email_classifier import classify_email
 
-def detect_phishing(text):
-    """
-    Use fine-tuned BERT to classify text.
-    """
+def detect_phishing(text, sender, ip):
+    if is_in_safe_list(sender, ip):
+        return {
+            "phishing": False,
+            "matched_keywords": [],
+            "source": "safe_list"
+        }
+
     result = classify_email(text)
     return {
-        "phishing": result["phishing"],
+        "phishing": result["label"] == "Phishing",
         "matched_keywords": []
     }
