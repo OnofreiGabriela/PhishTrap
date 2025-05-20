@@ -33,6 +33,24 @@ const Dashboard = () => {
     }
   };
 
+  const markAsPhishing = async (emailToUpdate) => {
+    try {
+      setEmails((prevEmails) =>
+        prevEmails.map((email) =>
+          email.from === emailToUpdate.from && email.ip === emailToUpdate.ip
+            ? { ...email, phishing: true }
+            : email
+        )
+      );
+      await axios.post('/email/mark-phishing', {
+        from: emailToUpdate.from,
+        ip: emailToUpdate.ip
+      });
+    } catch (err) {
+      console.error('Error marking email as phishing:', err);
+    }
+  };
+
   const reportPhishingToDNSC = (email) => {
     setReportData(email);
     setShowReportModal(true);
@@ -111,7 +129,25 @@ const Dashboard = () => {
                         </div>
                       </>
                     ) : (
-                      <span style={{ color: 'green' }}>✅ Safe</span>
+                      <>
+                        <span style={{ color: 'green' }}>✅ Safe</span><br />
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
+                          <button
+                            onClick={() => markAsPhishing(email)}
+                            style={{
+                              padding: '5px 10px',
+                              fontSize: '12px',
+                              cursor: 'pointer',
+                              backgroundColor: '#ff8800',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px'
+                            }}
+                          >
+                            Mark as Phishing
+                          </button>
+                        </div>
+                      </>
                     )}
                   </td>
                 </tr>

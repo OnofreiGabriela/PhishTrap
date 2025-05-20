@@ -10,5 +10,25 @@
   {
     "sender": "LinkedIn <linkedin@e.linkedin.com>",
     "ip": "199.7.202.92"
+  },
+  {
+    "sender": "Sameday <easybox@sameday.ro>",
+    "ip": "161.38.198.175"
+  },
+  {
+    "sender": "vinted.ro echipa <no-reply@vinted.ro>",
+    "ip": "69.169.229.209"
+  },
+  {
+    "sender": "Echipa Vinted <no-reply@vinted.ro>",
+    "ip": "185.68.38.71"
+  },
+  {
+    "sender": "Nuria.ro <contact@nuria.ro>",
+    "ip": "216.221.161.85"
+  },
+  {
+    "sender": "Tudor | Declic <contact@declic.ro>",
+    "ip": "54.240.6.48"
   }
 ]
