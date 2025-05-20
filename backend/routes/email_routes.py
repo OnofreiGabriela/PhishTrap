@@ -3,7 +3,7 @@ from services.email_fetcher import fetch_emails
 from services.phishing_detector import detect_phishing
 from utils.cleaner import clean_email_content
 from utils.safe_utils import add_to_safe_list, remove_from_safe_list
-from utils.blacklist_utils import add_to_blacklist
+from utils.blacklist_utils import add_to_blacklist, remove_from_blacklist
 
 email_bp = Blueprint("email_bp", __name__)
 
@@ -41,10 +41,11 @@ def mark_safe():
     ip = data.get("ip")
     if sender and ip:
         add_to_safe_list(sender, ip)
+        remove_from_blacklist(sender, ip)
         return jsonify({"success": True})
     return jsonify({"success": False, "error": "Missing sender or ip"}), 400
 
-@email_bp.route('/email/mark-phishing', methods=['POST'])
+@email_bp.route('/mark-phishing', methods=['POST'])
 def mark_phishing():
     data = request.json
     sender = data.get("from")

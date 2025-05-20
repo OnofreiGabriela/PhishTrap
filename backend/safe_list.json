@@ -4,10 +4,6 @@
     "ip": "Not found"
   },
   {
-    "sender": "Echipa Vinted <no-reply@vinted.ro>",
-    "ip": "185.175.194.4"
-  },
-  {
     "sender": "LinkedIn <linkedin@e.linkedin.com>",
     "ip": "199.7.202.92"
   },
@@ -16,19 +12,51 @@
     "ip": "161.38.198.175"
   },
   {
-    "sender": "vinted.ro echipa <no-reply@vinted.ro>",
-    "ip": "69.169.229.209"
-  },
-  {
-    "sender": "Echipa Vinted <no-reply@vinted.ro>",
-    "ip": "185.68.38.71"
-  },
-  {
     "sender": "Nuria.ro <contact@nuria.ro>",
     "ip": "216.221.161.85"
   },
   {
     "sender": "Tudor | Declic <contact@declic.ro>",
     "ip": "54.240.6.48"
+  },
+  {
+    "sender": "OpenAI <noreply@tm.openai.com>",
+    "ip": "198.2.128.161"
+  },
+  {
+    "sender": "LinkedIn Job Alerts <jobalerts-noreply@linkedin.com>",
+    "ip": "108.174.6.187"
+  },
+  {
+    "sender": "Team Snapchat <no_reply@snapchat.com>",
+    "ip": "208.117.49.205"
+  },
+  {
+    "sender": "SEPHORA <fidelitate@communication.sephora-info-ro.com>",
+    "ip": "192.243.247.192"
+  },
+  {
+    "sender": "IQOS<contact@iqos.ro>",
+    "ip": "89.234.14.226"
+  },
+  {
+    "sender": "Alerta eJobs <contact@mta.ejobs.ro>",
+    "ip": "193.231.205.167"
+  },
+  {
+    "sender": "Echipa Vinted <no-reply@vinted.ro>",
+    "ip": "185.68.37.70"
+  },
+  {
+    "sender": "PPC <notificari-noreply@ppcgroup.com>",
+    "ip": "69.169.224.1"
+  },
+  {
+    "sender": "Echipa Vinted <no-reply@vinted.ro>",
+    "ip": "185.68.38.7"
+  },
+  {
+    "sender": "eMAG <oferte@e2.emag.ro>",
+    "ip": "149.72.154.222"
   }
 ]

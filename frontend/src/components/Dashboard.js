@@ -28,6 +28,7 @@ const Dashboard = () => {
         from: emailToUpdate.from,
         ip: emailToUpdate.ip
       });
+      await fetchAnalyzedEmails();
     } catch (err) {
       console.error('Error marking email as safe:', err);
     }
@@ -46,6 +47,7 @@ const Dashboard = () => {
         from: emailToUpdate.from,
         ip: emailToUpdate.ip
       });
+      await fetchAnalyzedEmails();
     } catch (err) {
       console.error('Error marking email as phishing:', err);
     }
@@ -59,6 +61,27 @@ const Dashboard = () => {
   useEffect(() => {
     fetchAnalyzedEmails();
   }, []);
+
+  const sendBaitResponse = async (email) => {
+    console.log("Sending bait with:", {
+      from: email.from,
+      ip: email.ip,
+      body: email.body
+    });
+  
+    try {
+      await axios.post('/send-bait', {
+        from: email.from,
+        ip: email.ip,
+        body: email.body,
+      });
+      alert("Bait response sent!");
+    } catch (err) {
+      console.error("Failed to send bait:", err);
+      alert("Failed to send bait.");
+    }
+  };
+  
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
@@ -99,32 +122,30 @@ const Dashboard = () => {
                           {email.ip !== "NOT FOUND" && (
                             <button
                               onClick={() => reportAsSafe(email)}
-                              style={{
-                                padding: '5px 10px',
-                                fontSize: '12px',
-                                cursor: 'pointer',
-                                backgroundColor: '#28a745',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                              }}
+                              style={{ /* styling here */ }}
                             >
                               Mark as Safe
                             </button>
                           )}
                           <button
                             onClick={() => reportPhishingToDNSC(email)}
+                            style={{ /* styling here */ }}
+                          >
+                            Report to DNSC
+                          </button>
+                          <button
+                            onClick={() => sendBaitResponse(email)}
                             style={{
                               padding: '5px 10px',
                               fontSize: '12px',
                               cursor: 'pointer',
-                              backgroundColor: '#dc3545',
-                              color: 'white',
+                              backgroundColor: '#ffc107',
+                              color: 'black',
                               border: 'none',
                               borderRadius: '4px',
                             }}
                           >
-                            Report to DNSC
+                            Send Bait
                           </button>
                         </div>
                       </>
