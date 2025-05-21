@@ -58,5 +58,9 @@
   {
     "sender": "eMAG <oferte@e2.emag.ro>",
     "ip": "149.72.154.222"
+  },
+  {
+    "sender": "Vinted <no-reply@vinted.ro>",
+    "ip": "185.68.38.135"
   }
 ]

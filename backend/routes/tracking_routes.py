@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.tracker import handle_tracking_request
+from services.tracker import handle_tracking_request, load_tracking_logs
 from services.auto_responder import generate_bait_and_send
 from utils.blacklist_utils import add_to_blacklist, remove_from_blacklist, is_in_blacklist
 from utils.safe_utils import add_to_safe_list, remove_from_safe_list, normalize_sender
@@ -56,3 +56,13 @@ def mark_safe():
         return jsonify({"success": True})
 
     return jsonify({"success": False, "error": "Missing sender or ip"}), 400
+
+
+@tracking_bp.route("/get-baited-attackers", methods=["GET"])
+def get_baited_attackers():
+    try:
+        data = load_tracking_logs()
+        return jsonify(data)
+    except Exception as e:
+        print(f"[ERROR] Failed to load baited attackers: {e}")
+        return jsonify({"error": "Failed to load tracking logs"}), 500

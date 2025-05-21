@@ -28,13 +28,11 @@ def generate_token():
     return str(uuid.uuid4())
 
 def create_tracking_link(token):
-    return f"http://localhost:3000"
+    return f"http://localhost:3000/api/t/{token}"
 
 def generate_bait_response(original_body):
-    prompt = f"Write a natural, curious maybe even naive email reply, with the signature not using a name or a slot for a name, to this suspicious message:\n\n{original_body}"
+    prompt = f"Write a natural, curious maybe even naive email reply, with the signature not using a name or a slot for a name, nor initials, to this suspicious message:\n\n{original_body}"
     return generate_bait_response_ollama(prompt)
-
-
 
 def generate_bait_and_send(sender, ip, original_body):
     bait_email = prepare_bait_email(sender, ip, original_body)

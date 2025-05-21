@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../api/api';
+import { useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
   const [emails, setEmails] = useState([]);
@@ -57,10 +58,11 @@ const Dashboard = () => {
     setReportData(email);
     setShowReportModal(true);
   };
-
+  
+  const location = useLocation();
   useEffect(() => {
     fetchAnalyzedEmails();
-  }, []);
+  }, [location.pathname]);
 
   const sendBaitResponse = async (email) => {
     console.log("Sending bait with:", {
