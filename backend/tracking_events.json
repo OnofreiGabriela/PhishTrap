@@ -1,14 +1,37 @@
 [
   {
-    "token": "logs",
+    "token": "aadbae0a-442b-49ea-ab12-0c82db13ee52",
     "ip": "127.0.0.1",
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
-    "timestamp": "2025-05-21T10:39:36.910138"
+    "user_agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+    "timestamp": "2025-05-22T09:42:40.668637",
+    "event": "email_opened"
   },
   {
-    "token": "logs",
+    "token": "aadbae0a-442b-49ea-ab12-0c82db13ee52",
     "ip": "127.0.0.1",
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
-    "timestamp": "2025-05-21T10:39:37.170325"
+    "user_agent": "Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36 (compatible; Google-Read-Aloud; +https://support.google.com/webmasters/answer/1061943)",
+    "timestamp": "2025-05-22T09:42:44.606019",
+    "event": "email_opened"
+  },
+  {
+    "token": "aadbae0a-442b-49ea-ab12-0c82db13ee52",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36 (compatible; Google-Read-Aloud; +https://support.google.com/webmasters/answer/1061943)",
+    "timestamp": "2025-05-22T09:42:45.547055",
+    "event": "email_opened"
+  },
+  {
+    "token": "aadbae0a-442b-49ea-ab12-0c82db13ee52",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36 (compatible; Google-Read-Aloud; +https://support.google.com/webmasters/answer/1061943)",
+    "timestamp": "2025-05-22T09:42:45.569523",
+    "event": "email_opened"
+  },
+  {
+    "token": "aadbae0a-442b-49ea-ab12-0c82db13ee52",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+    "timestamp": "2025-05-22T09:42:50.704477",
+    "event": "email_opened"
   }
 ]

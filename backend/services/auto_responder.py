@@ -28,7 +28,7 @@ def generate_token():
     return str(uuid.uuid4())
 
 def create_tracking_link(token):
-    return f"http://localhost:3000/api/t/{token}"
+    return f" https://c4a1-86-124-142-241.ngrok-free.app/api/track/{token}"
 
 def generate_bait_response(original_body):
     prompt = f"Write a natural, curious maybe even naive email reply, with the signature not using a name or a slot for a name, nor initials, to this suspicious message:\n\n{original_body}"
@@ -51,11 +51,16 @@ def prepare_bait_email(sender, ip, original_body):
     response_content = generate_bait_response(original_body)
     response_content += f"\n\nFor details, please click here: {tracking_link}"
 
-    save_tracking_log(token, sender, ip)
+    response_content += (
+        f'\n\n<img src="https://c4a1-86-124-142-241.ngrok-free.app/api/track/open?token={token}" '
+        f'alt="" width="1" height="1" style="display:none;">'
+    )
 
+    save_tracking_log(token, sender, ip)
 
     return {
         "to": sender,
         "subject": "Re: Your recent email",
         "body": response_content
     }
+

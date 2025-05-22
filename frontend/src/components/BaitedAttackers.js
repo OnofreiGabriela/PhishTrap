@@ -26,22 +26,26 @@ const BaitedAttackers = () => {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th style={{ textAlign: 'left', padding: '8px' }}>Token</th>
-              <th style={{ textAlign: 'left', padding: '8px' }}>IP Address</th>
-              <th style={{ textAlign: 'left', padding: '8px' }}>User Agent</th>
-              <th style={{ textAlign: 'left', padding: '8px' }}>Timestamp</th>
+                <th style={{ textAlign: 'left', padding: '8px' }}>Event</th> {/* New */}
+                <th style={{ textAlign: 'left', padding: '8px' }}>Token</th>
+                <th style={{ textAlign: 'left', padding: '8px' }}>IP Address</th>
+                <th style={{ textAlign: 'left', padding: '8px' }}>User Agent</th>
+                <th style={{ textAlign: 'left', padding: '8px' }}>Timestamp</th>
             </tr>
-          </thead>
+            </thead>
+
           <tbody>
             {logs.map((log, index) => (
-              <tr key={index}>
+                <tr key={index}>
+                <td style={{ padding: '8px' }}>{log.event || 'link_clicked'}</td> {/* New */}
                 <td style={{ padding: '8px' }}>{log.token}</td>
                 <td style={{ padding: '8px' }}>{log.ip}</td>
                 <td style={{ padding: '8px' }}>{log.user_agent}</td>
                 <td style={{ padding: '8px' }}>{log.timestamp}</td>
-              </tr>
+                </tr>
             ))}
-          </tbody>
+        </tbody>
+
         </table>
       )}
     </div>
