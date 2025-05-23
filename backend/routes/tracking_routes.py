@@ -16,7 +16,7 @@ PIXEL_PATH = "static/pixel.png"
 def track_click(token):
     print(f"[TRACK] Link clicked: {token} from IP {request.remote_addr}")
     handle_tracking_request(token, request)
-    return "<h1>Thank you for your response!</h1>", 200
+    return "<h1>You already have my emaik!</h1>", 200
 
 @tracking_bp.route("/track/open", methods=["GET"])
 def track_email_open():

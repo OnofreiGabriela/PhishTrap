@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 TRACKING_EVENTS_FILE = "tracking_events.json"
 
@@ -16,7 +16,7 @@ def is_bot(user_agent):
 def handle_tracking_request(token, request, event="link_clicked"):
     ip = request.remote_addr
     user_agent = request.headers.get("User-Agent", "Unknown")
-    timestamp = datetime.utcnow()
+    timestamp = datetime.now(timezone.utc)
 
     if is_bot(user_agent):
         print(f"[INFO] Skipped bot request from {ip}: {user_agent}")

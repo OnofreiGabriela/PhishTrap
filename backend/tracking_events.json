@@ -33,5 +33,26 @@
     "user_agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
     "timestamp": "2025-05-22T09:42:50.704477",
     "event": "email_opened"
+  },
+  {
+    "token": "fed8fe21-0ec6-4c8f-9247-92ae5e8c17ec",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
+    "timestamp": "2025-05-23T13:36:17.989377+00:00",
+    "event": "link_clicked"
+  },
+  {
+    "token": "3210dbde-54e6-4901-8b10-fc5735211440",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
+    "timestamp": "2025-05-23T14:01:30.129492+00:00",
+    "event": "link_clicked"
+  },
+  {
+    "token": "e6fa15cd-e7b7-4dec-9923-4bcf56ca55fc",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
+    "timestamp": "2025-05-23T14:13:56.637914+00:00",
+    "event": "link_clicked"
   }
 ]
