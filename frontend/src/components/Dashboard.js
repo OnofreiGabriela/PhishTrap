@@ -4,15 +4,20 @@ import { useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
   const [emails, setEmails] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [baitSendingMap, setBaitSendingMap] = useState({});
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportData, setReportData] = useState(null);
 
   const fetchAnalyzedEmails = async () => {
+    setLoading(true);
     try {
       const response = await axios.get('/email/fetch-analyze');
       setEmails([...response.data]);
     } catch (err) {
       console.error('Error fetching analyzed emails:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,12 +70,7 @@ const Dashboard = () => {
   }, [location.pathname]);
 
   const sendBaitResponse = async (email) => {
-    console.log("Sending bait with:", {
-      from: email.from,
-      ip: email.ip,
-      body: email.body
-    });
-  
+    setBaitSendingMap(prev => ({ ...prev, [email.from + email.ip]: true }));
     try {
       await axios.post('/send-bait', {
         from: email.from,
@@ -81,6 +81,8 @@ const Dashboard = () => {
     } catch (err) {
       console.error("Failed to send bait:", err);
       alert("Failed to send bait.");
+    } finally {
+      setBaitSendingMap(prev => ({ ...prev, [email.from + email.ip]: false }));
     }
   };
   
@@ -98,7 +100,9 @@ const Dashboard = () => {
       {/* Scanned Emails Table */}
       <div>
         <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}> Auto-Scanned Inbox</h3>
-        {emails.length === 0 ? (
+        {loading ? (
+          <p style={{ fontSize: '16px', color: '#007bff' }}>⏳ Loading emails, please wait...</p>
+        ) : emails.length === 0 ? (
           <p>No recent emails found.</p>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -147,7 +151,7 @@ const Dashboard = () => {
                               borderRadius: '4px',
                             }}
                           >
-                            Send Bait
+                            {baitSendingMap[email.from + email.ip] ? '⏳ Sending...' : 'Send Bait'}
                           </button>
                         </div>
                       </>

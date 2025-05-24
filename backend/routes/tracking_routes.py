@@ -16,7 +16,7 @@ PIXEL_PATH = "static/pixel.png"
 def track_click(token):
     print(f"[TRACK] Link clicked: {token} from IP {request.remote_addr}")
     handle_tracking_request(token, request)
-    return "<h1>You already have my emaik!</h1>", 200
+    return "<h1>You already have my email!</h1>", 200
 
 @tracking_bp.route("/track/open", methods=["GET"])
 def track_email_open():
@@ -81,3 +81,66 @@ def get_baited_attackers():
     except Exception as e:
         print(f"[ERROR] Failed to load baited attackers: {e}")
         return jsonify({"error": "Failed to load tracking logs"}), 500
+
+@tracking_bp.route("/get-safe-list", methods=["GET"])
+def get_safe_list():
+    try:
+        with open('safe_list.json', 'r') as f:
+            data = json.load(f)
+        return jsonify(data)
+    except Exception as e:
+        print(f"[ERROR] Failed to load safe list: {e}")
+        return jsonify({"error": "Failed to load safe list"}), 500
+
+@tracking_bp.route("/get-blacklist", methods=["GET"])
+def get_blacklist():
+    try:
+        with open('blacklist.json', 'r') as f:
+            data = json.load(f)
+        return jsonify(data)
+    except Exception as e:
+        print(f"[ERROR] Failed to load blacklist: {e}")
+        return jsonify({"error": "Failed to load blacklist"}), 500
+
+@tracking_bp.route("/remove-from-safe", methods=["POST"])
+def remove_from_safe():
+    data = request.json
+    sender = data.get("sender")
+    ip = data.get("ip")
+
+    if not sender or not ip:
+        return jsonify({"success": False, "error": "Missing sender or IP"}), 400
+
+    try:
+        with open('safe_list.json', 'r+') as f:
+            entries = json.load(f)
+            updated = [e for e in entries if not (e['sender'] == sender and e['ip'] == ip)]
+            f.seek(0)
+            f.truncate()
+            json.dump(updated, f, indent=2)
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"[ERROR] Failed to remove from safe list: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@tracking_bp.route("/remove-from-blacklist", methods=["POST"])
+def remove_from_blacklist():
+    data = request.json
+    sender = data.get("sender")
+    ip = data.get("ip")
+
+    if not sender or not ip:
+        return jsonify({"success": False, "error": "Missing sender or IP"}), 400
+
+    try:
+        with open('blacklist.json', 'r+') as f:
+            entries = json.load(f)
+            updated = [e for e in entries if not (e['sender'] == sender and e['ip'] == ip)]
+            f.seek(0)
+            f.truncate()
+            json.dump(updated, f, indent=2)
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"[ERROR] Failed to remove from blacklist: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500

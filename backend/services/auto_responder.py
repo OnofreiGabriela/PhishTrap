@@ -31,7 +31,7 @@ def create_tracking_link(token):
     return f" https://c4a1-86-124-142-241.ngrok-free.app/api/track/{token}"
 
 def generate_bait_response(original_body):
-    prompt = f"Write a natural, curious maybe even naive email reply, with no signature, to this suspicious message:\n\n{original_body}"
+    prompt = f"Write a natural, curious maybe even naive email reply, and replace the sign off with my intials, X, to this suspicious message:\n\n{original_body}"
     return generate_bait_response_ollama(prompt)
 
 def generate_bait_and_send(sender, ip, original_body):
@@ -55,16 +55,14 @@ def prepare_bait_email(sender, ip, original_body):
     response_content = f"""
     <p style="font-size:15px;">
     {formatted_body}
-    </p>
-    <p style="font-size:15px;">
+    My contact info <a href="{tracking_link}" style="color:#007bff;text-decoration:none;">click here</a>.
     <img src="https://c4a1-86-124-142-241.ngrok-free.app/api/track/open?token={token}" 
         alt="" width="1" height="1" style="display:none;">
-    My contact info <a href="{tracking_link}" style="color:#007bff;text-decoration:none;">click here</a>.
     </p>
 
     """
 
-    save_tracking_log(token, sender, ip)
+    save_tracking_log(token, sender, ip, original_body)
 
     return {
         "to": sender,

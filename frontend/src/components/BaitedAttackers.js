@@ -31,20 +31,37 @@ const BaitedAttackers = () => {
                 <th style={{ textAlign: 'left', padding: '8px' }}>IP Address</th>
                 <th style={{ textAlign: 'left', padding: '8px' }}>User Agent</th>
                 <th style={{ textAlign: 'left', padding: '8px' }}>Timestamp</th>
+                <th style={{ textAlign: 'left', padding: '8px' }}>Action</th>
             </tr>
             </thead>
 
           <tbody>
             {logs.map((log, index) => (
                 <tr key={index}>
-                <td style={{ padding: '8px' }}>{log.event || 'link_clicked'}</td> {/* New */}
+                <td style={{ padding: '8px' }}>{log.event || 'link_clicked'}</td>
                 <td style={{ padding: '8px' }}>{log.token}</td>
                 <td style={{ padding: '8px' }}>{log.ip}</td>
                 <td style={{ padding: '8px' }}>{log.user_agent}</td>
                 <td style={{ padding: '8px' }}>{log.timestamp}</td>
+                <td style={{ padding: '8px' }}>
+                    <button
+                    onClick={() => window.open(`/report/${log.token}`, '_blank')}
+                    style={{
+                        padding: '5px 10px',
+                        backgroundColor: '#28a745',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                    }}
+                    >
+                    View Report
+                    </button>
+                </td>
                 </tr>
             ))}
-        </tbody>
+          </tbody>
+
 
         </table>
       )}
