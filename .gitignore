@@ -4,6 +4,7 @@ __pycache__/
 *.egg-info/
 venv/
 .env
+config.json
 
 # React/Node
 node_modules/

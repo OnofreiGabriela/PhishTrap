@@ -16,7 +16,7 @@ const SafeList = () => {
   const removeFromSafe = async (sender, ip) => {
     try {
       await axios.post('/remove-from-safe', { sender, ip });
-      fetchSafeList();  // Refresh after removal
+      fetchSafeList();
     } catch (error) {
       console.error('Failed to remove from safe list:', error);
     }

@@ -1,7 +1,7 @@
 import json
 import os
-from datetime import datetime, timezone
 import requests
+from datetime import datetime, timezone
 
 TRACKING_EVENTS_FILE = "tracking_events.json"
 
@@ -10,23 +10,56 @@ KNOWN_BOTS = [
     "Yahoo", "crawler", "bot", "spider", "preview"
 ]
 
-def get_ip_info(ip):
+KNOWN_VPN_ASNS = ['AS9009', 'AS174', 'AS20052']
+KNOWN_VPN_NAMES = ['NordVPN', 'ExpressVPN', 'ProtonVPN', 'Surfshark']
+
+def query_ipwho(ip):
     try:
-        response = requests.get(f"http://ip-api.com/json/{ip}").json()
-        return {
-            "country": response.get("country"),
-            "region": response.get("regionName"),
-            "city": response.get("city"),
-            "isp": response.get("isp"),
-            "org": response.get("org"),
-            "as": response.get("as"),
-            "mobile": response.get("mobile"),
-            "proxy": response.get("proxy"),
-            "hosting": response.get("hosting")
-        }
-    except Exception as e:
-        print(f"[ERROR] IP lookup failed: {e}")
+        r = requests.get(f"https://ipwho.is/{ip}", timeout=5)
+        return r.json()
+    except:
         return {}
+
+def query_ipapi(ip):
+    try:
+        r = requests.get(f"http://ip-api.com/json/{ip}", timeout=5)
+        return r.json()
+    except:
+        return {}
+
+def query_freegeoip(ip):
+    try:
+        r = requests.get(f"https://freegeoip.app/json/{ip}", timeout=5)
+        return r.json()
+    except:
+        return {}
+
+def combine_ip_info(ip):
+    data_who = query_ipwho(ip)
+    data_api = query_ipapi(ip)
+    data_freegeo = query_freegeoip(ip)
+
+    combined = {
+        "country": data_who.get("country") or data_api.get("country") or data_freegeo.get("country_name"),
+        "region": data_who.get("region") or data_api.get("regionName") or data_freegeo.get("region_name"),
+        "city": data_who.get("city") or data_api.get("city") or data_freegeo.get("city"),
+        "isp": data_who.get("connection", {}).get("isp") or data_api.get("isp"),
+        "org": data_who.get("connection", {}).get("organization") or data_api.get("org"),
+        "as": data_who.get("connection", {}).get("asn") or data_api.get("as") or data_freegeo.get("asn"),
+        "mobile": data_who.get("connection", {}).get("mobile"),
+        "proxy": data_who.get("connection", {}).get("proxy", False),
+        "vpn": data_who.get("connection", {}).get("vpn", False),
+        "tor": data_who.get("connection", {}).get("tor", False),
+    }
+
+    return combined
+
+def check_if_vpn(asn, isp, org):
+    return (
+        str(asn) in KNOWN_VPN_ASNS or
+        any(name.lower() in (isp or '').lower() for name in KNOWN_VPN_NAMES) or
+        any(name.lower() in (org or '').lower() for name in KNOWN_VPN_NAMES)
+    )
 
 def is_bot(user_agent):
     ua = user_agent.lower()
@@ -41,7 +74,8 @@ def handle_tracking_request(token, request, event="link_clicked"):
         print(f"[INFO] Skipped bot request from {ip}: {user_agent}")
         return
 
-    geo_info = get_ip_info(ip)
+    geo_info = combine_ip_info(ip)
+    suspected_vpn = check_if_vpn(geo_info.get("as"), geo_info.get("isp"), geo_info.get("org"))
 
     data = {
         "token": token,
@@ -49,7 +83,8 @@ def handle_tracking_request(token, request, event="link_clicked"):
         "user_agent": user_agent,
         "timestamp": timestamp.isoformat(),
         "event": event,
-        **geo_info
+        **geo_info,
+        "suspected_vpn": suspected_vpn
     }
 
     logs = []

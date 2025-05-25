@@ -76,8 +76,28 @@ def mark_safe():
 @tracking_bp.route("/get-baited-attackers", methods=["GET"])
 def get_baited_attackers():
     try:
-        data = load_tracking_logs()
-        return jsonify(data)
+        with open("tracking_events.json", "r") as f:
+            try:
+                event_data = json.load(f)
+            except json.JSONDecodeError:
+                event_data = []
+
+        bait_data = []
+        if os.path.exists("tracking_log.json"):
+            with open("tracking_log.json", "r") as f:
+                for line in f:
+                    try:
+                        bait_data.append(json.loads(line.strip()))
+                    except json.JSONDecodeError:
+                        continue
+
+        for event in event_data:
+            matching_bait = next((b for b in bait_data if b.get("token") == event.get("token")), None)
+            if matching_bait:
+                event["original_email"] = matching_bait.get("original_email", "No original content recorded.")
+
+        return jsonify(event_data)
+
     except Exception as e:
         print(f"[ERROR] Failed to load baited attackers: {e}")
         return jsonify({"error": "Failed to load tracking logs"}), 500
@@ -144,3 +164,21 @@ def remove_from_blacklist():
     except Exception as e:
         print(f"[ERROR] Failed to remove from blacklist: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
+    
+@tracking_bp.route("/delete-baited-attacker/<token>", methods=["DELETE"])
+def delete_baited_attacker(token):
+    if not os.path.exists(TRACKING_EVENTS_FILE):
+        return jsonify({"error": "No tracking events found"}), 404
+
+    try:
+        with open(TRACKING_EVENTS_FILE, "r+") as f:
+            logs = json.load(f)
+            updated_logs = [entry for entry in logs if entry.get("token") != token]
+            f.seek(0)
+            f.truncate()
+            json.dump(updated_logs, f, indent=2)
+
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"[ERROR] Failed to delete attacker entry: {e}")
+        return jsonify({"error": "Failed to delete attacker entry"}), 500

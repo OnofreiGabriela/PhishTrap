@@ -46,5 +46,40 @@
     "mobile": null,
     "proxy": null,
     "hosting": null
+  },
+  {
+    "token": "be673afc-20c5-4c25-baaf-9f79696c19bb",
+    "ip": "5.14.145.48",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
+    "timestamp": "2025-05-24T15:22:59.535237+00:00",
+    "event": "link_clicked",
+    "country": "Romania",
+    "region": "Arad",
+    "city": "Arad",
+    "isp": "DIGI ROMANIA S.A.",
+    "org": null,
+    "as": 8708,
+    "mobile": null,
+    "proxy": null,
+    "vpn": null,
+    "tor": null
+  },
+  {
+    "token": "be673afc-20c5-4c25-baaf-9f79696c19bb",
+    "ip": "86.124.142.241",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
+    "timestamp": "2025-05-24T15:55:18.948708+00:00",
+    "event": "link_clicked",
+    "country": "Romania",
+    "region": "Timi\u0219",
+    "city": "Ma\u0219loc",
+    "isp": "DIGI ROMANIA S.A.",
+    "org": "RCS & RDS Business - RCS & RDS Residential CGN",
+    "as": 8708,
+    "mobile": null,
+    "proxy": false,
+    "vpn": false,
+    "tor": false,
+    "suspected_vpn": false
   }
 ]

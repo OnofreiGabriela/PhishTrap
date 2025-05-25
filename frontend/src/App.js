@@ -12,7 +12,7 @@ function App() {
         <Link to="/" style={{ marginRight: '10px' }}>Dashboard</Link>
         <Link to="/attackers" style={{ marginRight: '10px' }}>Baited Attackers</Link>
         <Link to="/safelist" style={{ marginRight: '10px' }}>Safe-listed Senders</Link>
-        <Link to="/blacklist">Blacklisted Senders</Link>
+        <Link to="/blacklist" style={{ marginRight: '10px' }}>Blacklisted Senders</Link>
       </nav>
 
       <Routes>
