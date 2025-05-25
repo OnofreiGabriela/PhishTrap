@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../api/api';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [emails, setEmails] = useState([]);
@@ -8,14 +8,21 @@ const Dashboard = () => {
   const [baitSendingMap, setBaitSendingMap] = useState({});
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportData, setReportData] = useState(null);
+  const navigate = useNavigate();
 
   const fetchAnalyzedEmails = async () => {
     setLoading(true);
     try {
       const response = await axios.get('/email/fetch-analyze');
-      setEmails([...response.data]);
+      if (response.data.error && response.data.error.includes('Missing email credentials')) {
+        alert('Your session has expired. Please log in again.');
+        navigate('/login');
+      } else {
+        setEmails([...response.data]);
+      }
     } catch (err) {
       console.error('Error fetching analyzed emails:', err);
+      alert('Failed to fetch emails. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -86,12 +93,42 @@ const Dashboard = () => {
     }
   };
   
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post('/logout');
+      if (response.data.success) {
+        navigate('/login');
+        window.location.reload();
+      } else {
+        alert('Failed to log out.');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      alert('An error occurred during logout.');
+    }
+  };
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>
-        Emails from the Last 24 Hours (Scanned for Phishing)
-      </h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>
+          Emails from the Last 24 Hours (Scanned for Phishing)
+        </h2>
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: '6px 12px',
+            backgroundColor: '#dc3545',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '14px'
+          }}
+        >
+          Log Out
+        </button>
+      </div>
       <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
         This list shows all emails received in the past 24 hours, regardless of read status.
         Each one has been automatically analyzed for phishing.

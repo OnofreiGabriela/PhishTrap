@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path='.env')
+
+
 from flask import Flask
 from flask_cors import CORS
 from routes.email_routes import email_bp

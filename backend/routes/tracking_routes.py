@@ -6,11 +6,13 @@ from utils.safe_utils import add_to_safe_list, remove_from_safe_list, normalize_
 from datetime import datetime
 import json
 import os
+from utils.encryption import encrypt_data, decrypt_data
 
 tracking_bp = Blueprint("tracking_bp", __name__)
 
 TRACKING_EVENTS_FILE = "tracking_events.json"
 PIXEL_PATH = "static/pixel.png"
+CONFIG_FILE = "config.json"
 
 @tracking_bp.route("/track/<token>", methods=["GET"])
 def track_click(token):
@@ -182,3 +184,45 @@ def delete_baited_attacker(token):
     except Exception as e:
         print(f"[ERROR] Failed to delete attacker entry: {e}")
         return jsonify({"error": "Failed to delete attacker entry"}), 500
+
+@tracking_bp.route('/save-config', methods=['POST'])
+def save_config():
+    data = request.get_json()
+    if not data or "email" not in data or "api_key" not in data:
+        return jsonify({"success": False, "error": "Missing email or api_key"}), 400
+
+    try:
+        encrypted = encrypt_data(json.dumps(data))
+        with open(CONFIG_FILE, "wb") as f:
+            f.write(encrypted)
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"[ERROR] Failed to save config: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@tracking_bp.route("/check-config", methods=["GET"])
+def check_config():
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, "rb") as f:
+                encrypted = f.read()
+            decrypted = decrypt_data(encrypted)
+            json.loads(decrypted)
+            exists = True
+        except Exception as e:
+            print(f"[ERROR] Config check failed: {e}")
+            exists = False
+    else:
+        exists = False
+
+    return jsonify({"config_exists": exists})
+
+@tracking_bp.route("/logout", methods=["POST"])
+def logout():
+    try:
+        if os.path.exists(CONFIG_FILE):
+            os.remove(CONFIG_FILE)
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"[ERROR] Failed to clear config: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500

@@ -4,23 +4,25 @@ from utils.tracking_utils import save_tracking_log
 import smtplib
 from email.mime.text import MIMEText
 from utils.ollama_client import generate_bait_response_ollama
-
+from utils.config import load_config
 
 SMTP_SERVER = "smtp.gmail.com"  
 SMTP_PORT = 587
-SMTP_USERNAME =  os.getenv("EMAIL_USER")      
-SMTP_PASSWORD = os.getenv("EMAIL_PASS")  
+
 
 
 def send_email(to_address, subject, body):
+    config = load_config()
+    EMAIL = config.get('email')
+    APP_PASSWORD = config.get('api_key')
     msg = MIMEText(body, "html")
     msg["Subject"] = subject
-    msg["From"] = SMTP_USERNAME
+    msg["From"] = EMAIL
     msg["To"] = to_address
 
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
         server.starttls()
-        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.login(EMAIL, APP_PASSWORD)
         server.send_message(msg)
         print(f"[INFO] Email sent to {to_address}")
 

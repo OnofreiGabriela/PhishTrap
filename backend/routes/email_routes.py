@@ -9,21 +9,28 @@ email_bp = Blueprint("email_bp", __name__)
 
 @email_bp.route('/fetch-analyze', methods=['GET'])
 def fetch_and_analyze_emails():
-    emails = fetch_emails()
-    result = []
+    try:
+        emails = fetch_emails()
+        result = []
 
-    for e in emails:
-        cleaned_body = clean_email_content(e.get("body", ""))
-        result_data = detect_phishing(cleaned_body, e["from"], e.get("ip", ""))
-        result.append({
-            "from": e["from"],
-            "subject": e["subject"],
-            "phishing": result_data["phishing"],
-            "ip": e.get("ip", "N/A"),
-            "body":  cleaned_body
-        })
+        for e in emails:
+            cleaned_body = clean_email_content(e.get("body", ""))
+            result_data = detect_phishing(cleaned_body, e["from"], e.get("ip", ""))
+            result.append({
+                "from": e["from"],
+                "subject": e["subject"],
+                "phishing": result_data["phishing"],
+                "ip": e.get("ip", "N/A"),
+                "body":  cleaned_body
+            })
 
-    return jsonify(result)
+        return jsonify(result)
+    except ValueError as ve:
+        print(f"[WARN] {ve}")
+        return jsonify({"error": "Missing email credentials. Please log in."}), 400
+    except Exception as e:
+        print(f"[ERROR] {e}")
+        return jsonify({"error": "Failed to fetch and analyze emails."}), 500
 
 @email_bp.route('/check', methods=['POST'])
 def check_email():

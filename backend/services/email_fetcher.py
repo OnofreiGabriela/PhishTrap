@@ -6,12 +6,19 @@ import re
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
+from utils.config import load_config
 
 load_dotenv()
-
-EMAIL = os.getenv("EMAIL_USER")
-APP_PASSWORD = os.getenv("EMAIL_PASS")
+config = load_config()
+# EMAIL = os.getenv("EMAIL_USER")
+# APP_PASSWORD = os.getenv("EMAIL_PASS")
 SERVER = "imap.gmail.com"
+# config = load_config()
+# EMAIL = config.get("email")
+# APP_PASSWORD = config.get("api_key")
+
+# if not EMAIL or not APP_PASSWORD:
+#     raise ValueError("EMAIL or APP_PASSWORD is missing from config.json. Please log in first.")
 
 def decode_mime_words(s):
     decoded_parts = decode_header(s)
@@ -41,6 +48,12 @@ def extract_ip_from_headers(headers):
     return "Not found"
 
 def fetch_emails(limit=100):
+    config = load_config()
+    EMAIL = config.get('email')
+    APP_PASSWORD = config.get('api_key')
+    if not EMAIL or not APP_PASSWORD:
+        raise ValueError("EMAIL or APP_PASSWORD is missing from config.json. Please log in first.")
+
     since_date = (datetime.now() - timedelta(days=1)).strftime("%d-%b-%Y")
 
     mail = imaplib.IMAP4_SSL(SERVER)

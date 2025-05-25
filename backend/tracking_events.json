@@ -81,5 +81,23 @@
     "vpn": false,
     "tor": false,
     "suspected_vpn": false
+  },
+  {
+    "token": "09c274ad-445b-4bd3-b4cf-5a3b0b484e16",
+    "ip": "86.124.142.241",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+    "timestamp": "2025-05-25T21:29:20.137698+00:00",
+    "event": "link_clicked",
+    "country": "Romania",
+    "region": "Timi\u0219",
+    "city": "Ma\u0219loc",
+    "isp": "DIGI ROMANIA S.A.",
+    "org": "RCS & RDS Business - RCS & RDS Residential CGN",
+    "as": 8708,
+    "mobile": null,
+    "proxy": false,
+    "vpn": false,
+    "tor": false,
+    "suspected_vpn": false
   }
 ]
