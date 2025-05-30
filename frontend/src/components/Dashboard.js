@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from '../api/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ const Dashboard = () => {
   const [reportData, setReportData] = useState(null);
   const navigate = useNavigate();
 
-  const fetchAnalyzedEmails = async () => {
+  const fetchAnalyzedEmails = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get('/email/fetch-analyze');
@@ -26,7 +26,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   const reportAsSafe = async (emailToUpdate) => {
     try {
@@ -70,11 +70,11 @@ const Dashboard = () => {
     setReportData(email);
     setShowReportModal(true);
   };
-  
+
   const location = useLocation();
   useEffect(() => {
     fetchAnalyzedEmails();
-  }, [location.pathname]);
+  }, [location.pathname, fetchAnalyzedEmails]);
 
   const sendBaitResponse = async (email) => {
     setBaitSendingMap(prev => ({ ...prev, [email.from + email.ip]: true }));
@@ -92,7 +92,7 @@ const Dashboard = () => {
       setBaitSendingMap(prev => ({ ...prev, [email.from + email.ip]: false }));
     }
   };
-  
+
   const handleLogout = async () => {
     try {
       const response = await axios.post('/logout');
@@ -109,170 +109,104 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>
-          Emails from the Last 24 Hours (Scanned for Phishing)
-        </h2>
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: '6px 12px',
-            backgroundColor: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}
-        >
-          Log Out
-        </button>
+    <div className="container my-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>📧 Emails from the Last 24 Hours</h2>
+        <button className="btn btn-danger" onClick={handleLogout}>Log Out</button>
       </div>
-      <p style={{ fontSize: '14px', color: '#666', marginBottom: '30px' }}>
-        This list shows all emails received in the past 24 hours, regardless of read status.
-        Each one has been automatically analyzed for phishing.
+
+      <p className="text-muted mb-4">
+        This list shows all emails received in the past 24 hours, regardless of read status. Each one has been automatically analyzed for phishing.
       </p>
 
-      {/* Scanned Emails Table */}
-      <div>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}> Auto-Scanned Inbox</h3>
-        {loading ? (
-          <p style={{ fontSize: '16px', color: '#007bff' }}>⏳ Loading emails, please wait...</p>
-        ) : emails.length === 0 ? (
-          <p>No recent emails found.</p>
-        ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
+      {loading ? (
+        <div className="text-center my-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : emails.length === 0 ? (
+        <p>No recent emails found.</p>
+      ) : (
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="table-dark">
               <tr>
-                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>From</th>
-                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Subject</th>
-                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Ip Address</th>
-                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #ccc' }}>Status</th>
+                <th>From</th>
+                <th>Subject</th>
+                <th>IP Address</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {emails.map((email, idx) => (
                 <tr key={idx}>
-                  <td style={{ padding: '8px' }}>{email.from}</td>
-                  <td style={{ padding: '8px' }}>{email.subject}</td>
-                  <td style={{ padding: '8px' }}>{email.ip}</td>
-                  <td style={{ padding: '8px' }}>
+                  <td>{email.from}</td>
+                  <td>{email.subject}</td>
+                  <td>{email.ip}</td>
+                  <td>
                     {email.phishing ? (
-                      <>
-                        <span style={{ color: 'red' }}>⚠️ Possible Phishing Detected</span><br />
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
-                          {email.ip !== "NOT FOUND" && (
-                            <button
-                              onClick={() => reportAsSafe(email)}
-                              style={{ /* styling here */ }}
-                            >
-                              Mark as Safe
-                            </button>
-                          )}
-                          <button
-                            onClick={() => reportPhishingToDNSC(email)}
-                            style={{ /* styling here */ }}
-                          >
-                            Report to DNSC
-                          </button>
-                          <button
-                            onClick={() => sendBaitResponse(email)}
-                            style={{
-                              padding: '5px 10px',
-                              fontSize: '12px',
-                              cursor: 'pointer',
-                              backgroundColor: '#ffc107',
-                              color: 'black',
-                              border: 'none',
-                              borderRadius: '4px',
-                            }}
-                          >
-                            {baitSendingMap[email.from + email.ip] ? '⏳ Sending...' : 'Send Bait'}
-                          </button>
-                        </div>
-                      </>
+                      <span className="badge bg-danger">⚠️ Phishing</span>
                     ) : (
-                      <>
-                        <span style={{ color: 'green' }}>✅ Safe</span><br />
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
-                          <button
-                            onClick={() => markAsPhishing(email)}
-                            style={{
-                              padding: '5px 10px',
-                              fontSize: '12px',
-                              cursor: 'pointer',
-                              backgroundColor: '#ff8800',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px'
-                            }}
-                          >
-                            Mark as Phishing
-                          </button>
-                        </div>
-                      </>
+                      <span className="badge bg-success">✅ Safe</span>
                     )}
+                  </td>
+                  <td>
+                    <div className="btn-group btn-group-sm">
+                      {email.phishing ? (
+                        <>
+                          <button className="btn btn-success" onClick={() => reportAsSafe(email)}>
+                            Mark Safe
+                          </button>
+                          <button className="btn btn-primary" onClick={() => reportPhishingToDNSC(email)}>
+                            Report DNSC
+                          </button>
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => sendBaitResponse(email)}
+                            disabled={baitSendingMap[email.from + email.ip]}
+                          >
+                            {baitSendingMap[email.from + email.ip] ? 'Sending...' : 'Send Bait'}
+                          </button>
+                        </>
+                      ) : (
+                        <button className="btn btn-warning" onClick={() => markAsPhishing(email)}>
+                          Mark Phishing
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Report Modal */}
+      {/* Simple Bootstrap modal */}
       {showReportModal && reportData && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0,
-          width: '100%', height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 9999
-        }}>
-          <div style={{
-            background: '#fff',
-            padding: '20px',
-            borderRadius: '8px',
-            width: '500px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-          }}>
-            <h3>Report to DNSC</h3>
-            <p><strong>From:</strong> {reportData.from}</p>
-            <p><strong>Subject:</strong> {reportData.subject}</p>
-            <p><strong>IP Address:</strong> {reportData.ip}</p>
-            <p><strong>Content:</strong></p>
-            <div style={{ maxHeight: '150px', overflowY: 'auto', padding: '10px', backgroundColor: '#f1f1f1', borderRadius: '4px' }}>
-              <pre style={{ whiteSpace: 'pre-wrap', fontSize: '14px' }}>{reportData.body}</pre>
-            </div>
-            <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between' }}>
-              <button
-                onClick={() => setShowReportModal(false)}
-                style={{
-                  padding: '8px 12px',
-                  backgroundColor: '#6c757d',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '4px'
-                }}
-              >
-                Cancel
-              </button>
-              <a
-                href="https://pnrisc.dnsc.ro/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  padding: '8px 12px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  textDecoration: 'none',
-                  borderRadius: '4px'
-                }}
-              >
-                Open DNSC Form
-              </a>
+        <div className="modal show d-block" tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Report to DNSC</h5>
+                <button type="button" className="btn-close" onClick={() => setShowReportModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                <p><strong>From:</strong> {reportData.from}</p>
+                <p><strong>Subject:</strong> {reportData.subject}</p>
+                <p><strong>IP Address:</strong> {reportData.ip}</p>
+                <div className="bg-light p-2 rounded" style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                  <pre>{reportData.body}</pre>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setShowReportModal(false)}>Cancel</button>
+                <a className="btn btn-primary" href="https://pnrisc.dnsc.ro/" target="_blank" rel="noopener noreferrer">
+                  Open DNSC Form
+                </a>
+              </div>
             </div>
           </div>
         </div>

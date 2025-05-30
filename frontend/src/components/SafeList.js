@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../api/api';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const SafeList = () => {
   const [safeList, setSafeList] = useState([]);
@@ -27,43 +28,38 @@ const SafeList = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Safe-listed Senders</h2>
+    <div className="container mt-5">
+      <h2 className="mb-4 text-center">Safe-listed Senders</h2>
       {safeList.length === 0 ? (
-        <p>No safe-listed senders.</p>
+        <div className="alert alert-info">No safe-listed senders.</div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={{ padding: '8px' }}>Sender</th>
-              <th style={{ padding: '8px' }}>IP Address</th>
-              <th style={{ padding: '8px' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {safeList.map((item, index) => (
-              <tr key={index}>
-                <td style={{ padding: '8px' }}>{item.sender}</td>
-                <td style={{ padding: '8px' }}>{item.ip}</td>
-                <td style={{ padding: '8px' }}>
-                  <button
-                    onClick={() => removeFromSafe(item.sender, item.ip)}
-                    style={{
-                      padding: '5px 10px',
-                      backgroundColor: '#dc3545',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Remove
-                  </button>
-                </td>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th>Sender</th>
+                <th>IP Address</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {safeList.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.sender}</td>
+                  <td>{item.ip}</td>
+                  <td>
+                    <button
+                      onClick={() => removeFromSafe(item.sender, item.ip)}
+                      className="btn btn-sm btn-danger"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from '../api/api';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const BlackList = () => {
   const [blackList, setBlackList] = useState([]);
 
-  const fetchBlackList = async () => {
+  const fetchBlackList = useCallback(async () => {
     try {
       const response = await axios.get('/get-blacklist');
       setBlackList(response.data);
     } catch (error) {
       console.error('Failed to load blacklist:', error);
     }
-  };
+  }, []);
 
   const removeFromBlacklist = async (sender, ip) => {
+    if (!window.confirm('Are you sure you want to remove this sender from the blacklist?')) return;
     try {
       await axios.post('/remove-from-blacklist', { sender, ip });
-      fetchBlackList();  // Refresh after removal
+      fetchBlackList();
     } catch (error) {
       console.error('Failed to remove from blacklist:', error);
     }
@@ -24,46 +26,41 @@ const BlackList = () => {
 
   useEffect(() => {
     fetchBlackList();
-  }, []);
+  }, [fetchBlackList]);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Blacklisted Senders</h2>
+    <div className="container mt-4">
+      <h2 className="mb-4 text-center">Blacklisted Senders</h2>
       {blackList.length === 0 ? (
-        <p>No blacklisted senders.</p>
+        <div className="alert alert-info text-center">No blacklisted senders.</div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={{ padding: '8px' }}>Sender</th>
-              <th style={{ padding: '8px' }}>IP Address</th>
-              <th style={{ padding: '8px' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blackList.map((item, index) => (
-              <tr key={index}>
-                <td style={{ padding: '8px' }}>{item.sender}</td>
-                <td style={{ padding: '8px' }}>{item.ip}</td>
-                <td style={{ padding: '8px' }}>
-                  <button
-                    onClick={() => removeFromBlacklist(item.sender, item.ip)}
-                    style={{
-                      padding: '5px 10px',
-                      backgroundColor: '#dc3545',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Remove
-                  </button>
-                </td>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th>Sender</th>
+                <th>IP Address</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {blackList.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.sender}</td>
+                  <td>{item.ip}</td>
+                  <td>
+                    <button
+                      onClick={() => removeFromBlacklist(item.sender, item.ip)}
+                      className="btn btn-danger btn-sm"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

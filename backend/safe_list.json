@@ -8,10 +8,6 @@
     "ip": "199.7.202.92"
   },
   {
-    "sender": "Sameday <easybox@sameday.ro>",
-    "ip": "161.38.198.175"
-  },
-  {
     "sender": "Nuria.ro <contact@nuria.ro>",
     "ip": "216.221.161.85"
   },
@@ -58,5 +54,9 @@
   {
     "sender": "Bestjobs <contact@bestjobs.eu>",
     "ip": "195.250.53.148"
+  },
+  {
+    "sender": "Netflix <info@members.netflix.com>",
+    "ip": "54.240.119.105"
   }
 ]

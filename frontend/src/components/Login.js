@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from '../api/api';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,12 +19,12 @@ const Login = () => {
     try {
       const response = await axios.post('/save-config', {
         email,
-        api_key: apiKey
+        api_key: apiKey,
       });
 
       if (response.data.success) {
         alert('Configuration saved successfully!');
-        navigate('/');  // Redirect to dashboard
+        navigate('/'); // Redirect to dashboard
         window.location.reload();
       } else {
         setError('Failed to save configuration.');
@@ -37,42 +38,35 @@ const Login = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Enter Your Credentials</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '10px' }}>
-          <label>Email:</label><br />
+    <div className="container mt-5" style={{ maxWidth: '400px' }}>
+      <h2 className="mb-4 text-center">Enter Your Credentials</h2>
+      <form onSubmit={handleSubmit} className="border p-4 rounded shadow-sm bg-light">
+        <div className="mb-3">
+          <label className="form-label">Email</label>
           <input
             type="email"
+            className="form-control"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px' }}
+            placeholder="you@example.com"
           />
         </div>
-        <div style={{ marginBottom: '10px' }}>
-          <label>API Key:</label><br />
+        <div className="mb-3">
+          <label className="form-label">API Key</label>
           <input
             type="password"
+            className="form-control"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px' }}
+            placeholder="Your API Key"
           />
         </div>
-        {error && (
-          <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>
-        )}
+        {error && <div className="alert alert-danger">{error}</div>}
         <button
           type="submit"
-          style={{
-            padding: '10px 15px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            width: '100%'
-          }}
+          className="btn btn-primary w-100"
           disabled={loading}
         >
           {loading ? 'Saving...' : 'Save and Continue'}
