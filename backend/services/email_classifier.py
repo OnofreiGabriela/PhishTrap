@@ -18,12 +18,12 @@ model.eval()
 
 import re
 
-def clean_email_text(text):
-    text = text.lower()
-    text = re.sub(r"http\S+", "[URL]", text)
-    text = re.sub(r"\S+@\S+", "[EMAIL]", text)
-    text = re.sub(r"[^a-zA-Z0-9\s\[\]]", "", text)
-    return text.strip()
+# def clean_email_text(text):
+#     text = text.lower()
+#     text = re.sub(r"http\S+", "[URL]", text)
+#     text = re.sub(r"\S+@\S+", "[EMAIL]", text)
+#     text = re.sub(r"[^a-zA-Z0-9\s\[\]]", "", text)
+#     return text.strip()
 
 
 def classify_email(text):

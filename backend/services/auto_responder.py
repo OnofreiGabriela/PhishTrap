@@ -9,7 +9,7 @@ from utils.config import load_config
 SMTP_SERVER = "smtp.gmail.com"  
 SMTP_PORT = 587
 
-
+TRACKING_URL = os.getenv('TRACKING_BASE_URL')
 
 def send_email(to_address, subject, body):
     config = load_config()
@@ -30,7 +30,7 @@ def generate_token():
     return str(uuid.uuid4())
 
 def create_tracking_link(token):
-    return f" https://c4a1-86-124-142-241.ngrok-free.app/api/track/{token}"
+    return f"{TRACKING_URL}/api/track/{token}"
 
 def generate_bait_response(original_body):
     prompt = f"Write a natural, curious maybe even naive email reply, and replace the sign off with my intials, X, to this suspicious message:\n\n{original_body}"
@@ -58,7 +58,7 @@ def prepare_bait_email(sender, ip, original_body):
     <p style="font-size:15px;">
     {formatted_body}
     My contact info <a href="{tracking_link}" style="color:#007bff;text-decoration:none;">click here</a>.
-    <img src="https://c4a1-86-124-142-241.ngrok-free.app/api/track/open?token={token}" 
+    <img src="{TRACKING_URL}/api/track/open?token={token}" 
         alt="" width="1" height="1" style="display:none;">
     </p>
 

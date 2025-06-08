@@ -41,7 +41,7 @@ const Dashboard = () => {
         from: emailToUpdate.from,
         ip: emailToUpdate.ip
       });
-      await fetchAnalyzedEmails();
+      //await fetchAnalyzedEmails();
     } catch (err) {
       console.error('Error marking email as safe:', err);
     }
@@ -60,7 +60,7 @@ const Dashboard = () => {
         from: emailToUpdate.from,
         ip: emailToUpdate.ip
       });
-      await fetchAnalyzedEmails();
+      //await fetchAnalyzedEmails();
     } catch (err) {
       console.error('Error marking email as phishing:', err);
     }
@@ -111,7 +111,7 @@ const Dashboard = () => {
   return (
     <div className="container my-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>📧 Emails from the Last 24 Hours</h2>
+        <h2>Emails from the Last 24 Hours</h2>
         <button className="btn btn-danger" onClick={handleLogout}>Log Out</button>
       </div>
 
@@ -147,9 +147,9 @@ const Dashboard = () => {
                   <td>{email.ip}</td>
                   <td>
                     {email.phishing ? (
-                      <span className="badge bg-danger">⚠️ Phishing</span>
+                      <span className="badge bg-danger">Phishing</span>
                     ) : (
-                      <span className="badge bg-success">✅ Safe</span>
+                      <span className="badge bg-success">Safe</span>
                     )}
                   </td>
                   <td>

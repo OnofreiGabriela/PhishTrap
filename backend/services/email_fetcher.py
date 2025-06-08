@@ -13,12 +13,7 @@ config = load_config()
 # EMAIL = os.getenv("EMAIL_USER")
 # APP_PASSWORD = os.getenv("EMAIL_PASS")
 SERVER = "imap.gmail.com"
-# config = load_config()
-# EMAIL = config.get("email")
-# APP_PASSWORD = config.get("api_key")
 
-# if not EMAIL or not APP_PASSWORD:
-#     raise ValueError("EMAIL or APP_PASSWORD is missing from config.json. Please log in first.")
 
 def decode_mime_words(s):
     decoded_parts = decode_header(s)

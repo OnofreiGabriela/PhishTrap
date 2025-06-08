@@ -28,7 +28,7 @@ function App() {
     return (
       <div className="text-center mt-5">
         <div className="spinner-border text-primary" role="status"></div>
-        <p className="mt-3">⏳ Loading, please wait...</p>
+        <p className="mt-3"> Loading, please wait...</p>
       </div>
     );
   }

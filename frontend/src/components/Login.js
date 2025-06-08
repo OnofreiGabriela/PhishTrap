@@ -71,6 +71,13 @@ const Login = () => {
         >
           {loading ? 'Saving...' : 'Save and Continue'}
         </button>
+
+      <div className="mt-3 alert alert-info small text-center">
+        <strong>Disclaimer:</strong> This is a demo version of <em>PhishTrap</em>, intended for educational and development purposes only. <br />
+        You may log in using any email and API key combination. However, to use the core features—reading emails from the past 24 hours and sending bait responses to potential phishing attackers, you must provide a <strong>valid, functional email address</strong> with access to a real mailbox. <br />
+        Fake credentials can be submitted for demonstration purposes, but email fetching and bait functionality will not be available. <br />
+        All credentials are stored locally in an encrypted <code>config.json</code> file using <code>cryptography.Fernet</code>. No external storage, backend authentication, or user verification is performed.
+      </div>
       </form>
     </div>
   );
